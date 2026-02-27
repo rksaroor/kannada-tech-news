@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ಟೆಕ್ ವಾರ್ತೆ — Kannada Tech News</title>
+  <meta name="description" content="ಕನ್ನಡದಲ್ಲಿ ತಾಜಾ ತಂತ್ರಜ್ಞಾನ ಸುದ್ದಿ" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0A0A0A;
+      --surface: #111111;
+      --surface2: #181818;
+      --border: #222222;
+      --text: #F0EDE8;
+      --muted: #888888;
+      --accent: #FF5733;
+      --accent2: #FFB347;
+      --accent3: #00E5A0;
+      --font-kn: 'Noto Sans Kannada', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --font-display: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-kn);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ── Demo Banner ─────────────────────────────────── */
+    .demo-banner {
+      background: linear-gradient(90deg, #1a1a2e, #16213e);
+      border-bottom: 1px solid #00E5A0;
+      padding: 8px 24px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #00E5A0;
+      letter-spacing: 0.05em;
+    }
+    .demo-banner strong { color: #FFB347; }
+
+    /* ── Ticker Bar ──────────────────────────────────── */
+    .ticker-bar {
+      background: var(--accent);
+      padding: 6px 0;
+      overflow: hidden;
+    }
+    .ticker-inner { display: flex; align-items: center; }
+    .ticker-label {
+      background: #000;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 12px;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+    .ticker-track { overflow: hidden; flex: 1; }
+    .ticker-content {
+      display: inline-flex;
+      gap: 60px;
+      animation: ticker 50s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-content:hover { animation-play-state: paused; }
+    .ticker-item { font-size: 12px; font-weight: 600; color: #000; cursor: pointer; }
+    @keyframes ticker {
+      from { transform: translateX(100vw); }
+      to { transform: translateX(-100%); }
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: grid; place-items: center;
+      font-family: var(--font-display);
+      font-weight: 800; font-size: 18px; color: white;
+    }
+    .logo-text { display: flex; flex-direction: column; line-height: 1; }
+    .logo-kn { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+    .logo-en { font-family: var(--font-mono); font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+    .header-right { display: flex; align-items: center; gap: 20px; }
+    .header-date { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+    .live-dot {
+      display: flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono); font-size: 10px; color: #00E5A0;
+    }
+    .live-dot::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: #00E5A0;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ── Category Nav ────────────────────────────────── */
+    .cat-nav { background: var(--surface); border-bottom: 1px solid var(--border); }
+    .cat-nav-inner {
+      max-width: 1400px; margin: 0 auto; padding: 0 24px;
+      display: flex; gap: 0; overflow-x: auto; scrollbar-width: none;
+    }
+    .cat-nav-inner::-webkit-scrollbar { display: none; }
+    .cat-btn {
+      padding: 12px 20px;
+      background: none; border: none;
+      color: var(--muted);
+      font-family: var(--font-kn);
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; white-space: nowrap;
+      transition: all 0.2s;
+      border-bottom: 2px solid transparent;
+      position: relative; top: 1px;
+    }
+    .cat-btn:hover { color: var(--text); }
+    .cat-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── Main Layout ─────────────────────────────────── */
+    main { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+
+    /* ── Hero Section ────────────────────────────────── */
+    .hero { display: grid; grid-template-columns: 1fr 340px; gap: 2px; margin-bottom: 2px; }
+    .hero-card {
+      position: relative; overflow: hidden;
+      background: var(--surface2); aspect-ratio: 16/9; cursor: pointer;
+    }
+    .hero-card:hover .hero-img { transform: scale(1.03); }
+    .hero-card:hover .hero-overlay { opacity: 0.7; }
+    .hero-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; display: block; }
+    .hero-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 80px;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+      transition: opacity 0.3s;
+    }
+    .hero-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px; }
+    .hero-badge {
+      display: inline-block;
+      background: var(--accent3); color: #000;
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      padding: 3px 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;
+    }
+    .hero-title { font-size: clamp(18px, 2.5vw, 28px); font-weight: 800; line-height: 1.3; margin-bottom: 10px; color: #fff; }
+    .hero-summary { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .hero-meta { display: flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.5); }
+
+    /* ── Side Stack ──────────────────────────────────── */
+    .side-stack { display: flex; flex-direction: column; gap: 2px; }
+    .side-card {
+      background: var(--surface2); flex: 1;
+      display: flex; overflow: hidden; cursor: pointer; transition: background 0.2s;
+    }
+    .side-card:hover { background: #1f1f1f; }
+    .side-thumb { width: 90px; flex-shrink: 0; background: var(--surface); overflow: hidden; }
+    .side-thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+    .side-body { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
+    .side-title { font-size: 13px; font-weight: 600; line-height: 1.4; color: var(--text); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .side-meta { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 8px; }
+    .side-cat { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 6px; margin-bottom: 6px; border-radius: 2px; font-family: var(--font-mono); letter-spacing: 0.05em; }
+
+    /* ── Section Header ──────────────────────────────── */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin: 40px 0 20px; }
+    .section-title {
+      font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--text);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-title::before { content: ''; display: block; width: 4px; height: 24px; background: var(--accent); border-radius: 2px; }
+    .article-count { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+    /* ── Article Grid ────────────────────────────────── */
+    .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px; }
+    .article-card {
+      background: var(--surface2); overflow: hidden; cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .article-card:hover { background: #1f1f1f; transform: translateY(-2px); }
+    .article-thumb { aspect-ratio: 16/9; background: var(--surface); overflow: hidden; position: relative; }
+    .article-thumb-placeholder {
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+      font-size: 42px;
+    }
+    .cat-tag {
+      position: absolute; top: 12px; left: 12px;
+      font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+      padding: 3px 8px; letter-spacing: 0.08em; text-transform: uppercase; color: #000;
+      border-radius: 2px;
+    }
+    .article-body { padding: 18px; }
+    .article-title {
+      font-size: 15px; font-weight: 700; line-height: 1.5; margin-bottom: 10px; color: var(--text);
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .article-summary {
+      font-size: 13px; color: var(--muted); line-height: 1.6;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 14px;
+    }
+    .article-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 12px; border-top: 1px solid var(--border);
+    }
+    .article-source { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+    .source-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+    .article-time { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+    .read-more {
+      display: inline-flex; align-items: center; gap: 4px;
+      color: var(--accent); font-size: 12px; font-weight: 600;
+      text-decoration: none; margin-top: 10px; transition: gap 0.2s;
+    }
+    .read-more:hover { gap: 8px; }
+
+    /* ── Stats Bar ───────────────────────────────────── */
+    .stats-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 20px 28px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin: 40px 0;
+      text-align: center;
+    }
+    .stat-item {}
+    .stat-value { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--accent); }
+    .stat-label { font-family: var(--font-mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+    /* ── Footer ─────────────────────────────────────── */
+    footer { border-top: 1px solid var(--border); margin-top: 60px; padding: 32px 24px; text-align: center; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; }
+    .footer-logo { font-size: 24px; font-weight: 900; color: var(--text); margin-bottom: 8px; }
+    .footer-tagline { font-size: 12px; color: var(--muted); font-family: var(--font-mono); margin-bottom: 20px; }
+    .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 12px; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-copy { margin-top: 20px; font-size: 11px; color: #444; font-family: var(--font-mono); }
+
+    /* ── Category Chips ──────────────────────────────── */
+    .cat-chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0; }
+    .cat-chip {
+      padding: 6px 14px; border-radius: 20px;
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+      border: 1px solid transparent;
+      letter-spacing: 0.04em;
+      color: #000;
+    }
+    .cat-chip:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+    /* ── Fade In ─────────────────────────────────────── */
+    .fade-in { opacity: 0; transform: translateY(16px); animation: fadeIn 0.5s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .side-stack { flex-direction: row; overflow-x: auto; }
+      .side-card { min-width: 240px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      main { padding: 16px; }
+      .articles-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 18px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Demo Banner -->
+<div class="demo-banner">
+  🎯 ಡೆಮೋ ಮೋಡ್ — <strong>DEMO MODE</strong> · Sample data preview · Connect Supabase to go live
+</div>
+
+<!-- Ticker -->
+<div class="ticker-bar">
+  <div class="ticker-inner">
+    <div class="ticker-label">⚡ ತಾಜಾ</div>
+    <div class="ticker-track">
+      <div class="ticker-content" id="tickerContent">
+        <span class="ticker-item">• OpenAI ನ ಹೊಸ GPT-5 ಮಾದರಿ ಈ ವರ್ಷ ಬಿಡುಗಡೆಯಾಗಲಿದೆ</span>
+        <span class="ticker-item">• Apple Vision Pro 2 ಭಾರತದಲ್ಲಿ ಬಿಡುಗಡೆ ಘೋಷಣೆ</span>
+        <span class="ticker-item">• Tesla ನ ಹೊಸ ಮಾದರಿ ₹40 ಲಕ್ಷಕ್ಕೆ ಬಂದಿದೆ</span>
+        <span class="ticker-item">• Samsung Galaxy S25 ಉಲ್ಟ್ರಾ ರಿವ್ಯೂ: ಅದ್ಭುತ ಕ್ಯಾಮೆರಾ</span>
+        <span class="ticker-item">• ಭಾರತೀಯ ಸ್ಟಾರ್ಟಪ್ ₹500 ಕೋಟಿ ಹಣ ಸಂಗ್ರಹ</span>
+        <span class="ticker-item">• SpaceX Starship ನ ಮುಂದಿನ ಟೆಸ್ಟ್ ಲಾಂಚ್ ತಯಾರಿ</span>
+        <span class="ticker-item">• Meta AI ಕನ್ನಡ ಭಾಷೆ ಬೆಂಬಲ ಪ್ರಾರಂಭ</span>
+        <span class="ticker-item">• Google Pixel 10 ಸ್ಪೆಸಿಫಿಕೇಶನ್ ಲೀಕ್</span>
+        <span class="ticker-item">• OpenAI ನ ಹೊಸ GPT-5 ಮಾದರಿ ಈ ವರ್ಷ ಬಿಡುಗಡೆಯಾಗಲಿದೆ</span>
+        <span class="ticker-item">• Apple Vision Pro 2 ಭಾರತದಲ್ಲಿ ಬಿಡುಗಡೆ ಘೋಷಣೆ</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">ಟ</div>
+      <div class="logo-text">
+        <span class="logo-kn">ಟೆಕ್ ವಾರ್ತೆ</span>
+        <span class="logo-en">Kannada Tech News</span>
+      </div>
+    </a>
+    <div class="header-right">
+      <div class="live-dot">LIVE</div>
+      <div class="header-date" id="headerDate"></div>
+    </div>
+  </div>
+</header>
+
+<!-- Category Nav -->
+<nav class="cat-nav">
+  <div class="cat-nav-inner">
+    <button class="cat-btn active" onclick="filterCat('all', this)">ಎಲ್ಲಾ</button>
+    <button class="cat-btn" onclick="filterCat('artificial-intelligence', this)">ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ</button>
+    <button class="cat-btn" onclick="filterCat('smartphones', this)">ಸ್ಮಾರ್ಟ್‌ಫೋನ್</button>
+    <button class="cat-btn" onclick="filterCat('startups', this)">ಸ್ಟಾರ್ಟಪ್</button>
+    <button class="cat-btn" onclick="filterCat('cybersecurity', this)">ಸೈಬರ್ ಭದ್ರತೆ</button>
+    <button class="cat-btn" onclick="filterCat('space-tech', this)">ಬಾಹ್ಯಾಕಾಶ</button>
+    <button class="cat-btn" onclick="filterCat('gaming', this)">ಗೇಮಿಂಗ್</button>
+    <button class="cat-btn" onclick="filterCat('electric-vehicles', this)">ಎಲೆಕ್ಟ್ರಿಕ್ ವಾಹನ</button>
+    <button class="cat-btn" onclick="filterCat('social-media', this)">ಸಾಮಾಜಿಕ ಮಾಧ್ಯಮ</button>
+  </div>
+</nav>
+
+<!-- Main -->
+<main>
+
+  <!-- Hero -->
+  <section class="hero fade-in" id="heroSection"></section>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar fade-in stagger-1">
+    <div class="stat-item">
+      <div class="stat-value" id="statArticles">0</div>
+      <div class="stat-label">ಒಟ್ಟು ಸುದ್ದಿಗಳು</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">8</div>
+      <div class="stat-label">ವಿಭಾಗಗಳು</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">5×</div>
+      <div class="stat-label">ದಿನಕ್ಕೆ ಅಪ್‌ಡೇಟ್</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">5</div>
+      <div class="stat-label">ಮೂಲಗಳು</div>
+    </div>
+  </div>
+
+  <!-- Latest Articles -->
+  <div class="section-header fade-in stagger-2">
+    <h2 class="section-title">ಇತ್ತೀಚಿನ ಸುದ್ದಿಗಳು</h2>
+    <span class="article-count" id="articleCount"></span>
+  </div>
+
+  <div class="articles-grid fade-in stagger-3" id="articlesGrid"></div>
+
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">ಟೆಕ್ ವಾರ್ತೆ</div>
+    <div class="footer-tagline">KANNADA TECH NEWS · ಕನ್ನಡದಲ್ಲಿ ತಂತ್ರಜ್ಞಾನ ಸುದ್ದಿ</div>
+    <div class="footer-links">
+      <a href="#">ಮುಖಪುಟ</a>
+      <a href="#">ನಮ್ಮ ಬಗ್ಗೆ</a>
+      <a href="#">ಗೌಪ್ಯತೆ ನೀತಿ</a>
+      <a href="#">ಸಂಪರ್ಕ</a>
+    </div>
+    <div class="footer-copy">© 2026 ಟೆಕ್ ವಾರ್ತೆ · Built with ♥ for Karnataka · Powered by Claude AI</div>
+  </div>
+</footer>
+
+<script>
+// ── Sample Data ────────────────────────────────────────────
+const ARTICLES = [
+  {
+    id: 1,
+    title_kn: "OpenAI ನ GPT-5 ಮಾದರಿ: ಮನುಷ್ಯರಿಗಿಂತ ಚಾಣಾಕ್ಷ ಎಐ ಬಂದಿದೆ",
+    title_en: "OpenAI's GPT-5 Surpasses Human-Level Performance on Multiple Benchmarks",
+    summary_kn: "OpenAI ತನ್ನ ಅತ್ಯಂತ ಶಕ್ತಿಶಾಲಿ GPT-5 ಮಾದರಿಯನ್ನು ಬಿಡುಗಡೆ ಮಾಡಿದೆ. ಈ ಹೊಸ AI ಮಾದರಿ ವೈದ್ಯಕೀಯ, ಕಾನೂನು ಮತ್ತು ವಿಜ್ಞಾನ ಕ್ಷೇತ್ರಗಳಲ್ಲಿ ಮಾನವ ತಜ್ಞರನ್ನು ಮೀರಿಸಿದೆ.",
+    source_url: "https://techcrunch.com",
+    source_name: "TechCrunch",
+    category_slug: "artificial-intelligence",
+    category: { name_kn: "ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ", color: "#FF6B35" },
+    emoji: "🤖",
+    published_at: new Date(Date.now() - 25*60*1000).toISOString()
+  },
+  {
+    id: 2,
+    title_kn: "Samsung Galaxy S25 Ultra: ₹1.3 ಲಕ್ಷದ ಫೋನ್ ಅದ್ಭುತ ಕ್ಯಾಮೆರಾ ಪ್ರದರ್ಶಿಸುತ್ತದೆ",
+    title_en: "Samsung Galaxy S25 Ultra Review: The Best Android Camera Phone Yet",
+    summary_kn: "Samsung ನ ಹೊಸ Galaxy S25 Ultra ಸ್ಮಾರ್ಟ್‌ಫೋನ್ 200MP ಕ್ಯಾಮೆರಾ ಮತ್ತು Snapdragon 8 Elite ಪ್ರೊಸೆಸರ್‌ನೊಂದಿಗೆ ಬಂದಿದೆ. Galaxy AI ವೈಶಿಷ್ಟ್ಯಗಳು ಈ ಫೋನ್ ಅನ್ನು ವಿಶೇಷ ಮಾಡಿವೆ.",
+    source_url: "https://theverge.com",
+    source_name: "The Verge",
+    category_slug: "smartphones",
+    category: { name_kn: "ಸ್ಮಾರ್ಟ್‌ಫೋನ್", color: "#4ECDC4" },
+    emoji: "📱",
+    published_at: new Date(Date.now() - 2*3600*1000).toISOString()
+  },
+  {
+    id: 3,
+    title_kn: "ಬೆಂಗಳೂರಿನ ಸ್ಟಾರ್ಟಪ್ Krutrim ₹2000 ಕೋಟಿ ಹಣ ಸಂಗ್ರಹಿಸಿದೆ",
+    title_en: "Bengaluru AI Startup Krutrim Raises $250M in Series B Funding Round",
+    summary_kn: "ಓಲಾ ಸಂಸ್ಥಾಪಕ ಭಾವಿಶ್ ಅಗರ್ವಾಲ್ ಅವರ AI ಸ್ಟಾರ್ಟಪ್ Krutrim ₹2000 ಕೋಟಿ ಹಣ ಸಂಗ್ರಹಿಸಿ ₹15000 ಕೋಟಿ ಮೌಲ್ಯದ ಯೂನಿಕಾರ್ನ್ ಆಗಿದೆ. ಕನ್ನಡ ಭಾಷೆ ಸೇರಿ 22 ಭಾರತೀಯ ಭಾಷೆಗಳಲ್ಲಿ AI ಸೇವೆ ನೀಡುತ್ತದೆ.",
+    source_url: "https://techcrunch.com",
+    source_name: "TechCrunch",
+    category_slug: "startups",
+    category: { name_kn: "ಸ್ಟಾರ್ಟಪ್", color: "#45B7D1" },
+    emoji: "🚀",
+    published_at: new Date(Date.now() - 4*3600*1000).toISOString()
+  },
+  {
+    id: 4,
+    title_kn: "Apple iPhone 17 Pro Max ಗೆ ಟೈಟಾನಿಯಂ ಫ್ರೇಮ್ ಮತ್ತು ಹೊಸ ಕ್ಯಾಮೆರಾ",
+    title_en: "Apple iPhone 17 Pro Max Leaks: Titanium Frame, Periscope Zoom and AI Features",
+    summary_kn: "iPhone 17 Pro Max ಗೆ 5x ಪೆರಿಸ್ಕೋಪ್ ಜೂಮ್ ಕ್ಯಾಮೆರಾ, A19 Bionic ಚಿಪ್ ಮತ್ತು ಹೊಸ AI ವೈಶಿಷ್ಟ್ಯಗಳು ಬರಲಿವೆ ಎಂದು ಲೀಕ್ ಆಗಿದೆ. ಬೆಲೆ ₹1.6 ಲಕ್ಷದಿಂದ ಪ್ರಾರಂಭವಾಗಬಹುದು.",
+    source_url: "https://wired.com",
+    source_name: "Wired",
+    category_slug: "smartphones",
+    category: { name_kn: "ಸ್ಮಾರ್ಟ್‌ಫೋನ್", color: "#4ECDC4" },
+    emoji: "📱",
+    published_at: new Date(Date.now() - 6*3600*1000).toISOString()
+  },
+  {
+    id: 5,
+    title_kn: "Tesla Model 3 ಭಾರತದಲ್ಲಿ ₹40 ಲಕ್ಷಕ್ಕೆ ಬಿಡುಗಡೆ: EV ಕ್ರಾಂತಿ",
+    title_en: "Tesla Model 3 Finally Launches in India at Rs 40 Lakh Starting Price",
+    summary_kn: "Tesla ತನ್ನ Model 3 ಕಾರನ್ನು ಭಾರತದಲ್ಲಿ ₹40 ಲಕ್ಷ ಬೆಲೆಗೆ ಬಿಡುಗಡೆ ಮಾಡಿದೆ. ಒಂದೇ ಚಾರ್ಜ್‌ನಲ್ಲಿ 490 ಕಿಮೀ ಓಡಬಲ್ಲ ಈ ಕಾರು ಭಾರತದ EV ಮಾರುಕಟ್ಟೆಯಲ್ಲಿ ದೊಡ್ಡ ಬದಲಾವಣೆ ತರಲಿದೆ.",
+    source_url: "https://theverge.com",
+    source_name: "The Verge",
+    category_slug: "electric-vehicles",
+    category: { name_kn: "ಎಲೆಕ್ಟ್ರಿಕ್ ವಾಹನ", color: "#F1948A" },
+    emoji: "⚡",
+    published_at: new Date(Date.now() - 8*3600*1000).toISOString()
+  },
+  {
+    id: 6,
+    title_kn: "SpaceX Starship ಚಂದ್ರನ ಕಡೆ ಮೊದಲ ಮಾನವ ಸಹಿತ ಯಾತ್ರೆ ಘೋಷಣೆ",
+    title_en: "SpaceX Announces First Crewed Starship Mission to the Moon in 2026",
+    summary_kn: "Elon Musk ಅವರ SpaceX 2026ರಲ್ಲಿ Starship ರಾಕೆಟ್‌ನಲ್ಲಿ ಮಾನವರನ್ನು ಚಂದ್ರಮಾನಕ್ಕೆ ಕಳುಹಿಸಲಿದೆ. NASA ಆರ್ಟೆಮಿಸ್ ಕಾರ್ಯಕ್ರಮದ ಭಾಗವಾಗಿ ಈ ಮಿಷನ್ ನಡೆಯಲಿದೆ.",
+    source_url: "https://arstechnica.com",
+    source_name: "Ars Technica",
+    category_slug: "space-tech",
+    category: { name_kn: "ಬಾಹ್ಯಾಕಾಶ", color: "#BB8FCE" },
+    emoji: "🚀",
+    published_at: new Date(Date.now() - 10*3600*1000).toISOString()
+  },
+  {
+    id: 7,
+    title_kn: "Microsoft ನ Copilot AI: ₹800 ಕೋಟಿ ಸೈಬರ್ ದಾಳಿ ತಡೆಯಿತು",
+    title_en: "Microsoft Copilot AI Thwarts $100M Ransomware Attack on Global Bank",
+    summary_kn: "Microsoft ನ AI-ಚಾಲಿತ Copilot ಭದ್ರತಾ ವ್ಯವಸ್ಥೆ ₹800 ಕೋಟಿ ಮೌಲ್ಯದ ರ್ಯಾನ್ಸಮ್‌ವೇರ್ ದಾಳಿಯನ್ನು ಕೆಲವೇ ನಿಮಿಷಗಳಲ್ಲಿ ಗುರುತಿಸಿ ನಿಲ್ಲಿಸಿತು. AI ಸೈಬರ್ ಭದ್ರತೆಯ ಭವಿಷ್ಯ ಹೇಗಿದೆ?",
+    source_url: "https://wired.com",
+    source_name: "Wired",
+    category_slug: "cybersecurity",
+    category: { name_kn: "ಸೈಬರ್ ಭದ್ರತೆ", color: "#F7DC6F" },
+    emoji: "🔒",
+    published_at: new Date(Date.now() - 12*3600*1000).toISOString()
+  },
+  {
+    id: 8,
+    title_kn: "GTA VI ಬಿಡುಗಡೆ ದಿನಾಂಕ ಘೋಷಣೆ: ಗೇಮರ್‌ಗಳಲ್ಲಿ ಅಪಾರ ಉತ್ಸಾಹ",
+    title_en: "Rockstar Games Officially Announces GTA VI Release Date and New Gameplay Features",
+    summary_kn: "Rockstar Games GTA VI ಅನ್ನು ಈ ವರ್ಷ ಅಕ್ಟೋಬರ್‌ನಲ್ಲಿ PS5 ಮತ್ತು Xbox ಸೀರೀಸ್ X ಗಾಗಿ ಬಿಡುಗಡೆ ಮಾಡಲಿದೆ. ವಾಸ್ತವ ಜೀವನ AI NPC ಗಳು ಮತ್ತು ಅಗಾಧ ಮುಕ್ತ ಜಗತ್ತು ಈ ಆಟವನ್ನು ಮೆರಗಿಸಲಿದೆ.",
+    source_url: "https://theverge.com",
+    source_name: "The Verge",
+    category_slug: "gaming",
+    category: { name_kn: "ಗೇಮಿಂಗ್", color: "#82E0AA" },
+    emoji: "🎮",
+    published_at: new Date(Date.now() - 14*3600*1000).toISOString()
+  },
+  {
+    id: 9,
+    title_kn: "Meta AI ಕನ್ನಡ ಭಾಷೆ ಬೆಂಬಲ: WhatsApp ಮತ್ತು Instagram ನಲ್ಲಿ ಕನ್ನಡ ಚಾಟ್",
+    title_en: "Meta AI Adds Kannada Language Support Across WhatsApp and Instagram",
+    summary_kn: "Meta ತನ್ನ AI ಅಸಿಸ್ಟೆಂಟ್‌ಗೆ ಕನ್ನಡ ಸೇರಿ 10 ಭಾರತೀಯ ಭಾಷೆಗಳ ಬೆಂಬಲ ಸೇರಿಸಿದೆ. WhatsApp ಮತ್ತು Instagram ನಲ್ಲಿ ಈಗ ಕನ್ನಡದಲ್ಲಿ Meta AI ಜೊತೆ ಮಾತನಾಡಬಹುದು.",
+    source_url: "https://techcrunch.com",
+    source_name: "TechCrunch",
+    category_slug: "social-media",
+    category: { name_kn: "ಸಾಮಾಜಿಕ ಮಾಧ್ಯಮ", color: "#85C1E9" },
+    emoji: "🌐",
+    published_at: new Date(Date.now() - 18*3600*1000).toISOString()
+  },
+  {
+    id: 10,
+    title_kn: "Google Gemini 2.0 Ultra: ಎಲ್ಲ AI ಮಾದರಿಗಳನ್ನು ಮೀರಿಸುವ ಹೊಸ ಚಾಂಪಿಯನ್",
+    title_en: "Google Gemini 2.0 Ultra Beats All Benchmarks, Challenges GPT-5 Dominance",
+    summary_kn: "Google ನ Gemini 2.0 Ultra ಮಾದರಿ ಗಣಿತ, ಕೋಡಿಂಗ್ ಮತ್ತು ತರ್ಕಶಾಸ್ತ್ರ ಕ್ಷೇತ್ರಗಳಲ್ಲಿ ಅಭೂತಪೂರ್ವ ಸಾಧನೆ ತೋರಿಸಿದೆ. GPT-5 ಜೊತೆ ನೇರ ಸ್ಪರ್ಧೆ ಶುರುವಾಗಿದೆ.",
+    source_url: "https://arstechnica.com",
+    source_name: "Ars Technica",
+    category_slug: "artificial-intelligence",
+    category: { name_kn: "ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ", color: "#FF6B35" },
+    emoji: "🤖",
+    published_at: new Date(Date.now() - 22*3600*1000).toISOString()
+  },
+  {
+    id: 11,
+    title_kn: "Ola Electric ₹1 ಲಕ್ಷಕ್ಕೆ ಹೊಸ ಎಲೆಕ್ಟ್ರಿಕ್ ಸ್ಕೂಟರ್ ಬಿಡುಗಡೆ",
+    title_en: "Ola Electric Launches New Scooter at Rs 1 Lakh with 200km Range",
+    summary_kn: "Ola Electric ನ ಹೊಸ S1X+ ಸ್ಕೂಟರ್ ₹1 ಲಕ್ಷ ಬೆಲೆಗೆ ಮತ್ತು 200 ಕಿಮೀ ರೇಂಜ್‌ನೊಂದಿಗೆ ಬಂದಿದೆ. MoveOS 5.0 ಸಾಫ್ಟ್‌ವೇರ್ ಮತ್ತು AI ನ್ಯಾವಿಗೇಶನ್ ಇದರ ಹೈಲೈಟ್‌ಗಳು.",
+    source_url: "https://techcrunch.com",
+    source_name: "TechCrunch",
+    category_slug: "electric-vehicles",
+    category: { name_kn: "ಎಲೆಕ್ಟ್ರಿಕ್ ವಾಹನ", color: "#F1948A" },
+    emoji: "⚡",
+    published_at: new Date(Date.now() - 26*3600*1000).toISOString()
+  },
+  {
+    id: 12,
+    title_kn: "Zomato AI: ನಿಮ್ಮ ಮೂಡ್ ನೋಡಿ ಊಟ ಸೂಚಿಸುವ ತಂತ್ರಜ್ಞಾನ",
+    title_en: "Zomato Launches Mood-Based Food Recommendation AI Feature in India",
+    summary_kn: "Zomato ಹೊಸ AI ವೈಶಿಷ್ಟ್ಯ ತನ್ನಿದೆ — ನಿಮ್ಮ ಸೆಲ್ಫಿ ನೋಡಿ ಮೂಡ್ ಅರ್ಥ ಮಾಡಿಕೊಂಡು ಅದಕ್ಕೆ ತಕ್ಕ ಊಟ ಸೂಚಿಸುತ್ತದೆ. ಭಾರತದ 500 ನಗರಗಳಲ್ಲಿ ಈ ಫೀಚರ್ ಲಭ್ಯ.",
+    source_url: "https://techcrunch.com",
+    source_name: "TechCrunch",
+    category_slug: "startups",
+    category: { name_kn: "ಸ್ಟಾರ್ಟಪ್", color: "#45B7D1" },
+    emoji: "🚀",
+    published_at: new Date(Date.now() - 30*3600*1000).toISOString()
+  }
+]
+
+// ── Helpers ────────────────────────────────────────────────
+function timeAgo(dateStr) {
+  const diff = (Date.now() - new Date(dateStr)) / 1000
+  if (diff < 60) return 'ಈಗಷ್ಟೇ'
+  if (diff < 3600) return `${Math.floor(diff/60)} ನಿಮಿಷ ಹಿಂದೆ`
+  if (diff < 86400) return `${Math.floor(diff/3600)} ಗಂಟೆ ಹಿಂದೆ`
+  return `${Math.floor(diff/86400)} ದಿನ ಹಿಂದೆ`
+}
+
+function thumbHtml(article, cls = 'article-thumb-placeholder') {
+  return `<div class="${cls}" style="background:linear-gradient(135deg,#161616,#252525)">${article.emoji}</div>`
+}
+
+// ── Render Hero ────────────────────────────────────────────
+function renderHero(articles) {
+  const hero = articles[0]
+  const sides = articles.slice(1, 3)
+
+  const heroCard = `
+    <div class="hero-card" onclick="window.open('${hero.source_url}','_blank')">
+      ${thumbHtml(hero, 'hero-img-placeholder')}
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge">⭐ ಮುಖ್ಯ ಸುದ್ದಿ</div>
+        <h2 class="hero-title">${hero.title_kn}</h2>
+        <p class="hero-summary">${hero.summary_kn}</p>
+        <div class="hero-meta">
+          <span>${hero.source_name}</span>
+          <span>·</span>
+          <span>${timeAgo(hero.published_at)}</span>
+          ${hero.category ? `<span>·</span><span>${hero.category.name_kn}</span>` : ''}
+        </div>
+      </div>
+    </div>`
+
+  const sideHtml = sides.map(a => `
+    <div class="side-card" onclick="window.open('${a.source_url}','_blank')">
+      <div class="side-thumb">${thumbHtml(a, 'side-thumb-placeholder')}</div>
+      <div class="side-body">
+        ${a.category ? `<span class="side-cat" style="background:${a.category.color};color:#000">${a.category.name_kn}</span>` : ''}
+        <div class="side-title">${a.title_kn}</div>
+        <div class="side-meta">${a.source_name} · ${timeAgo(a.published_at)}</div>
+      </div>
+    </div>`).join('')
+
+  document.getElementById('heroSection').innerHTML = heroCard + `<div class="side-stack">${sideHtml}</div>`
+}
+
+// ── Render Card ────────────────────────────────────────────
+function renderCard(a) {
+  return `
+    <div class="article-card" onclick="window.open('${a.source_url}','_blank')">
+      <div class="article-thumb">
+        ${thumbHtml(a, 'article-thumb-placeholder')}
+        ${a.category ? `<div class="cat-tag" style="background:${a.category.color}">${a.category.name_kn}</div>` : ''}
+      </div>
+      <div class="article-body">
+        <h3 class="article-title">${a.title_kn}</h3>
+        <p class="article-summary">${a.summary_kn}</p>
+        <div class="article-footer">
+          <div class="article-source">
+            <div class="source-dot"></div>
+            ${a.source_name}
+          </div>
+          <div class="article-time">${timeAgo(a.published_at)}</div>
+        </div>
+        <a class="read-more" href="${a.source_url}" target="_blank" onclick="event.stopPropagation()">
+          ಮೂಲ ಓದಿ →
+        </a>
+      </div>
+    </div>`
+}
+
+// ── Filter ─────────────────────────────────────────────────
+let activeCategory = 'all'
+
+function filterCat(slug, btn) {
+  activeCategory = slug
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  renderAll()
+}
+
+function renderAll() {
+  const filtered = activeCategory === 'all'
+    ? ARTICLES
+    : ARTICLES.filter(a => a.category_slug === activeCategory)
+
+  // Hero
+  renderHero(filtered.length ? filtered : ARTICLES)
+
+  // Grid
+  const grid = document.getElementById('articlesGrid')
+  const gridArticles = activeCategory === 'all' ? filtered.slice(3) : filtered
+  if (gridArticles.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--muted);">
+      <div style="font-size:48px;margin-bottom:16px;">📰</div>
+      <p>ಈ ವಿಭಾಗದಲ್ಲಿ ಇನ್ನೂ ಸುದ್ದಿಗಳಿಲ್ಲ</p>
+    </div>`
+  } else {
+    grid.innerHTML = gridArticles.map(renderCard).join('')
+  }
+
+  document.getElementById('articleCount').textContent =
+    `${filtered.length} ಸುದ್ದಿಗಳು ತೋರಿಸಲಾಗಿದೆ`
+}
+
+// ── Init ───────────────────────────────────────────────────
+document.getElementById('headerDate').textContent =
+  new Date().toLocaleDateString('kn-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' })
+
+// Animate stat counter
+let count = 0
+const target = ARTICLES.length
+const counter = document.getElementById('statArticles')
+const interval = setInterval(() => {
+  count = Math.min(count + 1, target)
+  counter.textContent = count
+  if (count >= target) clearInterval(interval)
+}, 80)
+
+renderAll()
+</script>
+
+</body>
+</html>

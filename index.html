@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ಟೆಕ್ ವಾರ್ತೆ — Kannada Tech News</title>
+  <meta name="description" content="ಕನ್ನಡದಲ್ಲಿ ತಾಜಾ ತಂತ್ರಜ್ಞಾನ ಸುದ್ದಿ" />
+  
+  <!-- Google Fonts: Noto Sans Kannada + display font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0A0A0A;
+      --surface: #111111;
+      --surface2: #181818;
+      --border: #222222;
+      --text: #F0EDE8;
+      --muted: #888888;
+      --accent: #FF5733;       /* vibrant red-orange */
+      --accent2: #FFB347;      /* warm gold */
+      --accent3: #00E5A0;      /* mint green for featured */
+      --font-kn: 'Noto Sans Kannada', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --font-display: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-kn);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Scrollbar ───────────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ── Header ─────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 10, 0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      color: white;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .logo-kn {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .logo-en {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── Live ticker ─────────────────────────────────── */
+    .ticker-bar {
+      background: var(--accent);
+      padding: 6px 0;
+      overflow: hidden;
+    }
+
+    .ticker-inner {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .ticker-label {
+      background: #000;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 12px;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .ticker-track {
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .ticker-content {
+      display: inline-flex;
+      gap: 60px;
+      animation: ticker 40s linear infinite;
+      white-space: nowrap;
+    }
+
+    .ticker-content:hover { animation-play-state: paused; }
+
+    .ticker-item {
+      font-size: 12px;
+      font-weight: 600;
+      color: #000;
+      cursor: pointer;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(100vw); }
+      to { transform: translateX(-100%); }
+    }
+
+    /* ── Nav Categories ──────────────────────────────── */
+    .cat-nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cat-nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .cat-nav-inner::-webkit-scrollbar { display: none; }
+
+    .cat-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: var(--font-kn);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      border-bottom: 2px solid transparent;
+      position: relative;
+      top: 1px;
+    }
+
+    .cat-btn:hover { color: var(--text); }
+    .cat-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── Main Layout ─────────────────────────────────── */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    /* ── Hero Section ────────────────────────────────── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 2px;
+      margin-bottom: 2px;
+    }
+
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface2);
+      aspect-ratio: 16/9;
+      cursor: pointer;
+    }
+
+    .hero-card:hover .hero-img { transform: scale(1.03); }
+    .hero-card:hover .hero-overlay { opacity: 0.7; }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+      display: block;
+    }
+
+    .hero-img-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      opacity: 0.3;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+      transition: opacity 0.3s;
+    }
+
+    .hero-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 28px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--accent3);
+      color: #000;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-size: clamp(18px, 2.5vw, 28px);
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ── Side Stack ──────────────────────────────────── */
+    .side-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .side-card {
+      background: var(--surface2);
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .side-card:hover { background: var(--surface); }
+
+    .side-thumb {
+      width: 80px;
+      flex-shrink: 0;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .side-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    .side-thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      opacity: 0.3;
+    }
+
+    .side-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+    }
+
+    .side-title {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .side-meta {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* ── Section Header ──────────────────────────────── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 40px 0 20px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::before {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 24px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* ── Article Grid ────────────────────────────────── */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2px;
+    }
+
+    .article-card {
+      background: var(--surface2);
+      overflow: hidden;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .article-card:hover {
+      background: var(--surface);
+      transform: translateY(-2px);
+    }
+
+    .article-thumb {
+      aspect-ratio: 16/9;
+      background: var(--surface);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .article-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+
+    .article-card:hover .article-thumb img { transform: scale(1.05); }
+
+    .article-thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      opacity: 0.2;
+      background: linear-gradient(135deg, #161616, #222);
+    }
+
+    .cat-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #000;
+    }
+
+    .article-body {
+      padding: 18px;
+    }
+
+    .article-title {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 10px;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .article-summary {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .article-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .article-source {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .source-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .article-time {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-top: 10px;
+      transition: gap 0.2s;
+    }
+
+    .read-more:hover { gap: 8px; }
+
+    /* ── Load More ───────────────────────────────────── */
+    .load-more-wrap {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .load-more-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px 40px;
+      font-family: var(--font-kn);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .load-more-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Skeleton ────────────────────────────────────── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--surface) 50%, var(--surface2) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* ── Footer ─────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .footer-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .footer-tagline {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-copy {
+      margin-top: 20px;
+      font-size: 11px;
+      color: #444;
+      font-family: var(--font-mono);
+    }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .side-stack { flex-direction: row; overflow-x: auto; }
+      .side-card { min-width: 240px; }
+    }
+
+    @media (max-width: 600px) {
+      main { padding: 16px; }
+      .articles-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 18px; }
+    }
+
+    /* ── Entrance Animations ─────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+  </style>
+</head>
+
+<body>
+
+<!-- ── Ticker Bar ──────────────────────────────────────── -->
+<div class="ticker-bar">
+  <div class="ticker-inner">
+    <div class="ticker-label">⚡ ತಾಜಾ</div>
+    <div class="ticker-track">
+      <div class="ticker-content" id="tickerContent">
+        <span class="ticker-item">ಸುದ್ದಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Header ──────────────────────────────────────────── -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/">
+      <div class="logo-icon">ಟ</div>
+      <div class="logo-text">
+        <span class="logo-kn">ಟೆಕ್ ವಾರ್ತೆ</span>
+        <span class="logo-en">Kannada Tech News</span>
+      </div>
+    </a>
+    <div style="font-family: var(--font-mono); font-size: 11px; color: var(--muted);" id="headerDate"></div>
+  </div>
+</header>
+
+<!-- ── Category Nav ────────────────────────────────────── -->
+<nav class="cat-nav">
+  <div class="cat-nav-inner">
+    <button class="cat-btn active" data-slug="all" onclick="filterByCategory('all', this)">ಎಲ್ಲಾ</button>
+    <button class="cat-btn" data-slug="artificial-intelligence" onclick="filterByCategory('artificial-intelligence', this)">ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ</button>
+    <button class="cat-btn" data-slug="smartphones" onclick="filterByCategory('smartphones', this)">ಸ್ಮಾರ್ಟ್‌ಫೋನ್</button>
+    <button class="cat-btn" data-slug="startups" onclick="filterByCategory('startups', this)">ಸ್ಟಾರ್ಟಪ್</button>
+    <button class="cat-btn" data-slug="cybersecurity" onclick="filterByCategory('cybersecurity', this)">ಸೈಬರ್ ಭದ್ರತೆ</button>
+    <button class="cat-btn" data-slug="space-tech" onclick="filterByCategory('space-tech', this)">ಬಾಹ್ಯಾಕಾಶ</button>
+    <button class="cat-btn" data-slug="gaming" onclick="filterByCategory('gaming', this)">ಗೇಮಿಂಗ್</button>
+    <button class="cat-btn" data-slug="electric-vehicles" onclick="filterByCategory('electric-vehicles', this)">ಎಲೆಕ್ಟ್ರಿಕ್ ವಾಹನ</button>
+    <button class="cat-btn" data-slug="social-media" onclick="filterByCategory('social-media', this)">ಸಾಮಾಜಿಕ ಮಾಧ್ಯಮ</button>
+  </div>
+</nav>
+
+<!-- ── Main Content ────────────────────────────────────── -->
+<main>
+
+  <!-- Hero Section -->
+  <section class="hero fade-in" id="heroSection">
+    <!-- Loaded dynamically -->
+    <div class="hero-card" style="display:flex;align-items:center;justify-content:center;">
+      <div class="skeleton" style="width:100%;height:100%;position:absolute;inset:0;"></div>
+    </div>
+    <div class="side-stack" id="sideStack">
+      <div class="side-card"><div class="skeleton" style="width:100%;height:100%;"></div></div>
+      <div class="side-card"><div class="skeleton" style="width:100%;height:100%;"></div></div>
+    </div>
+  </section>
+
+  <!-- Latest Articles -->
+  <div class="section-header fade-in stagger-1">
+    <h2 class="section-title">ಇತ್ತೀಚಿನ ಸುದ್ದಿಗಳು</h2>
+    <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);" id="articleCount"></span>
+  </div>
+
+  <div class="articles-grid fade-in stagger-2" id="articlesGrid">
+    <!-- Skeleton cards -->
+    ${Array(6).fill('<div class="article-card"><div class="article-thumb"><div class="skeleton" style="width:100%;height:100%;position:absolute;inset:0;"></div></div><div class="article-body"><div class="skeleton" style="height:18px;margin-bottom:8px;"></div><div class="skeleton" style="height:18px;width:80%;margin-bottom:16px;"></div><div class="skeleton" style="height:12px;width:60%;"></div></div></div>').join('')}
+  </div>
+
+  <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+    <button class="load-more-btn" onclick="loadMore()">ಇನ್ನಷ್ಟು ಸುದ್ದಿಗಳು ನೋಡಿ →</button>
+  </div>
+
+</main>
+
+<!-- ── Footer ──────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">ಟೆಕ್ ವಾರ್ತೆ</div>
+    <div class="footer-tagline">KANNADA TECH NEWS · ಕನ್ನಡದಲ್ಲಿ ತಂತ್ರಜ್ಞಾನ ಸುದ್ದಿ</div>
+    <div class="footer-links">
+      <a href="/">ಮುಖಪುಟ</a>
+      <a href="/about">ನಮ್ಮ ಬಗ್ಗೆ</a>
+      <a href="/privacy">ಗೌಪ್ಯತೆ ನೀತಿ</a>
+    </div>
+    <div class="footer-copy">© 2025 ಟೆಕ್ ವಾರ್ತೆ · Built with ♥ for Karnataka</div>
+  </div>
+</footer>
+
+<script>
+  // ── Config ────────────────────────────────────────────
+  // Replace with your actual Supabase URL and anon key
+  const SUPABASE_URL = 'https://bnwdxuzvpgzkdqswrrgc.supabase.co'
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJud2R4dXp2cGd6a2Rxc3dycmdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNjQxMzQsImV4cCI6MjA4Nzc0MDEzNH0.IRVjVeNLW6FY2QNK-8LGUBtum-1MsUjhSCQNUVUr_nk'
+
+  const { createClient } = supabase
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+  // ── State ─────────────────────────────────────────────
+  let currentCategory = 'all'
+  let currentPage = 0
+  const PAGE_SIZE = 9
+
+  // ── Date ─────────────────────────────────────────────
+  const now = new Date()
+  document.getElementById('headerDate').textContent =
+    now.toLocaleDateString('kn-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' })
+
+  // ── Time ago ─────────────────────────────────────────
+  function timeAgo(dateStr) {
+    const diff = (Date.now() - new Date(dateStr)) / 1000
+    if (diff < 3600) return `${Math.floor(diff/60)} ನಿಮಿಷ ಹಿಂದೆ`
+    if (diff < 86400) return `${Math.floor(diff/3600)} ಗಂಟೆ ಹಿಂದೆ`
+    return `${Math.floor(diff/86400)} ದಿನ ಹಿಂದೆ`
+  }
+
+  // ── Category color ────────────────────────────────────
+  function catColor(article) {
+    return article.categories?.color || '#FF5733'
+  }
+
+  // ── Thumbnail ─────────────────────────────────────────
+  const EMOJIS = ['💻', '📱', '🤖', '🚀', '🔒', '🎮', '⚡', '🌐']
+  function thumbHtml(url, size = 'full') {
+    const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)]
+    if (url) {
+      return size === 'full'
+        ? `<img src="${url}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'article-thumb-placeholder\\'>${emoji}</div>'">`
+        : `<img src="${url}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;">`
+    }
+    return `<div class="${size === 'full' ? 'article-thumb-placeholder' : 'side-thumb-placeholder'}">${emoji}</div>`
+  }
+
+  // ── Render Hero ───────────────────────────────────────
+  function renderHero(articles) {
+    if (!articles.length) return
+
+    const hero = articles[0]
+    const heroSection = document.getElementById('heroSection')
+
+    const heroCard = `
+      <div class="hero-card" onclick="window.open('${hero.source_url}','_blank')">
+        ${thumbHtml(hero.thumbnail_url, 'full')}
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-badge">⭐ ಮುಖ್ಯ ಸುದ್ದಿ</div>
+          <h2 class="hero-title">${hero.title_kn}</h2>
+          <div class="hero-meta">
+            <span>${hero.source_name}</span>
+            <span>·</span>
+            <span>${timeAgo(hero.published_at)}</span>
+          </div>
+        </div>
+      </div>`
+
+    const sideCards = articles.slice(1, 3).map(a => `
+      <div class="side-card" onclick="window.open('${a.source_url}','_blank')">
+        <div class="side-thumb">${thumbHtml(a.thumbnail_url, 'side')}</div>
+        <div class="side-body">
+          <div class="side-title">${a.title_kn}</div>
+          <div class="side-meta">${a.source_name} · ${timeAgo(a.published_at)}</div>
+        </div>
+      </div>`).join('')
+
+    heroSection.innerHTML = heroCard + `<div class="side-stack">${sideCards}</div>`
+  }
+
+  // ── Render Article Card ───────────────────────────────
+  function renderCard(a) {
+    const color = catColor(a)
+    return `
+      <div class="article-card" onclick="window.open('${a.source_url}','_blank')">
+        <div class="article-thumb">
+          ${thumbHtml(a.thumbnail_url, 'full')}
+          ${a.categories ? `<div class="cat-tag" style="background:${color}">${a.categories.name_kn}</div>` : ''}
+        </div>
+        <div class="article-body">
+          <h3 class="article-title">${a.title_kn}</h3>
+          <p class="article-summary">${a.summary_kn}</p>
+          <div class="article-footer">
+            <div class="article-source">
+              <div class="source-dot"></div>
+              ${a.source_name}
+            </div>
+            <div class="article-time">${timeAgo(a.published_at)}</div>
+          </div>
+          <a class="read-more" href="${a.source_url}" target="_blank" onclick="event.stopPropagation()">
+            ಮೂಲ ಓದಿ →
+          </a>
+        </div>
+      </div>`
+  }
+
+  // ── Fetch Articles ────────────────────────────────────
+  async function fetchArticles(page = 0, categorySlug = 'all') {
+    let query = db
+      .from('articles')
+      .select('*, categories(name_kn, name_en, slug, color)')
+      .eq('is_published', true)
+      .order('published_at', { ascending: false })
+      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
+
+    if (categorySlug !== 'all') {
+      // Join via category slug
+      const { data: cats } = await db.from('categories').select('id').eq('slug', categorySlug).single()
+      if (cats) query = query.eq('category_id', cats.id)
+    }
+
+    const { data, error } = await query
+    if (error) { console.error(error); return [] }
+    return data || []
+  }
+
+  // ── Load Initial ──────────────────────────────────────
+  async function loadInitial() {
+    const articles = await fetchArticles(0, currentCategory)
+
+    if (!articles.length) {
+      document.getElementById('heroSection').innerHTML = `
+        <div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--muted);">
+          <div style="font-size:48px;margin-bottom:16px;">📰</div>
+          <p>ಇನ್ನೂ ಸುದ್ದಿಗಳಿಲ್ಲ. ಶೀಘ್ರದಲ್ಲೇ ಬರಲಿದೆ!</p>
+        </div>`
+      document.getElementById('articlesGrid').innerHTML = ''
+      return
+    }
+
+    // Hero = first 3
+    renderHero(articles)
+
+    // Grid = rest
+    const gridArticles = articles.slice(3)
+    const grid = document.getElementById('articlesGrid')
+    grid.innerHTML = gridArticles.map(renderCard).join('')
+
+    // Ticker
+    const ticker = document.getElementById('tickerContent')
+    ticker.innerHTML = articles.map(a => `<span class="ticker-item">• ${a.title_kn}</span>`).join('')
+
+    // Count
+    document.getElementById('articleCount').textContent = `${articles.length}+ ಸುದ್ದಿಗಳು`
+
+    // Load more button
+    if (articles.length >= PAGE_SIZE) {
+      document.getElementById('loadMoreWrap').style.display = 'block'
+    }
+
+    currentPage = 0
+  }
+
+  // ── Load More ─────────────────────────────────────────
+  async function loadMore() {
+    currentPage++
+    const btn = document.querySelector('.load-more-btn')
+    btn.textContent = 'ಲೋಡ್ ಆಗುತ್ತಿದೆ...'
+    btn.disabled = true
+
+    const articles = await fetchArticles(currentPage, currentCategory)
+    const grid = document.getElementById('articlesGrid')
+    articles.forEach(a => {
+      const el = document.createElement('div')
+      el.innerHTML = renderCard(a)
+      grid.appendChild(el.firstElementChild)
+    })
+
+    btn.textContent = 'ಇನ್ನಷ್ಟು ಸುದ್ದಿಗಳು ನೋಡಿ →'
+    btn.disabled = false
+
+    if (articles.length < PAGE_SIZE) {
+      document.getElementById('loadMoreWrap').style.display = 'none'
+    }
+  }
+
+  // ── Filter by Category ────────────────────────────────
+  function filterByCategory(slug, btn) {
+    currentCategory = slug
+    currentPage = 0
+
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'))
+    btn.classList.add('active')
+
+    // Reset grid with skeleton
+    document.getElementById('articlesGrid').innerHTML =
+      Array(6).fill(`<div class="article-card"><div class="article-thumb skeleton" style="aspect-ratio:16/9"></div><div class="article-body"><div class="skeleton" style="height:16px;margin-bottom:8px;"></div><div class="skeleton" style="height:16px;width:70%"></div></div></div>`).join('')
+
+    loadInitial()
+  }
+
+  // ── Init ──────────────────────────────────────────────
+  loadInitial()
+</script>
+
+</body>
+</html>
