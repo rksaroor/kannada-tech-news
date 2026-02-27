@@ -44,12 +44,10 @@
       overflow-x: hidden;
     }
 
-    /* ── Scrollbar ───────────────────────────────────── */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
 
-    /* ── Header ─────────────────────────────────────── */
     header {
       position: sticky;
       top: 0;
@@ -110,7 +108,6 @@
       text-transform: uppercase;
     }
 
-    /* ── Live ticker ─────────────────────────────────── */
     .ticker-bar {
       background: var(--accent);
       padding: 6px 0;
@@ -162,7 +159,6 @@
       to { transform: translateX(-100%); }
     }
 
-    /* ── Nav Categories ──────────────────────────────── */
     .cat-nav {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -199,14 +195,12 @@
     .cat-btn:hover { color: var(--text); }
     .cat-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-    /* ── Main Layout ─────────────────────────────────── */
     main {
       max-width: 1400px;
       margin: 0 auto;
       padding: 32px 24px;
     }
 
-    /* ── Hero Section ────────────────────────────────── */
     .hero {
       display: grid;
       grid-template-columns: 1fr 340px;
@@ -289,7 +283,6 @@
       color: rgba(255,255,255,0.5);
     }
 
-    /* ── Side Stack ──────────────────────────────────── */
     .side-stack {
       display: flex;
       flex-direction: column;
@@ -352,7 +345,6 @@
       margin-top: 8px;
     }
 
-    /* ── Section Header ──────────────────────────────── */
     .section-header {
       display: flex;
       align-items: center;
@@ -379,7 +371,6 @@
       border-radius: 2px;
     }
 
-    /* ── Article Grid ────────────────────────────────── */
     .articles-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -509,7 +500,6 @@
 
     .read-more:hover { gap: 8px; }
 
-    /* ── Load More ───────────────────────────────────── */
     .load-more-wrap {
       text-align: center;
       margin: 40px 0;
@@ -533,7 +523,6 @@
       color: var(--accent);
     }
 
-    /* ── Skeleton ────────────────────────────────────── */
     .skeleton {
       background: linear-gradient(90deg, var(--surface2) 25%, var(--surface) 50%, var(--surface2) 75%);
       background-size: 200% 100%;
@@ -546,7 +535,6 @@
       100% { background-position: 200% 0; }
     }
 
-    /* ── Footer ─────────────────────────────────────── */
     footer {
       border-top: 1px solid var(--border);
       margin-top: 60px;
@@ -596,7 +584,6 @@
       font-family: var(--font-mono);
     }
 
-    /* ── Responsive ─────────────────────────────────── */
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; }
       .side-stack { flex-direction: row; overflow-x: auto; }
@@ -609,7 +596,6 @@
       .hero-title { font-size: 18px; }
     }
 
-    /* ── Entrance Animations ─────────────────────────── */
     .fade-in {
       opacity: 0;
       transform: translateY(16px);
@@ -628,7 +614,6 @@
 
 <body>
 
-<!-- ── Ticker Bar ──────────────────────────────────────── -->
 <div class="ticker-bar">
   <div class="ticker-inner">
     <div class="ticker-label">⚡ ತಾಜಾ</div>
@@ -640,7 +625,6 @@
   </div>
 </div>
 
-<!-- ── Header ──────────────────────────────────────────── -->
 <header>
   <div class="header-inner">
     <a class="logo" href="/">
@@ -654,7 +638,6 @@
   </div>
 </header>
 
-<!-- ── Category Nav ────────────────────────────────────── -->
 <nav class="cat-nav">
   <div class="cat-nav-inner">
     <button class="cat-btn active" data-slug="all" onclick="filterByCategory('all', this)">ಎಲ್ಲಾ</button>
@@ -669,12 +652,9 @@
   </div>
 </nav>
 
-<!-- ── Main Content ────────────────────────────────────── -->
 <main>
 
-  <!-- Hero Section -->
   <section class="hero fade-in" id="heroSection">
-    <!-- Loaded dynamically -->
     <div class="hero-card" style="display:flex;align-items:center;justify-content:center;">
       <div class="skeleton" style="width:100%;height:100%;position:absolute;inset:0;"></div>
     </div>
@@ -684,14 +664,12 @@
     </div>
   </section>
 
-  <!-- Latest Articles -->
   <div class="section-header fade-in stagger-1">
     <h2 class="section-title">ಇತ್ತೀಚಿನ ಸುದ್ದಿಗಳು</h2>
     <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted);" id="articleCount"></span>
   </div>
 
   <div class="articles-grid fade-in stagger-2" id="articlesGrid">
-    <!-- Skeleton cards -->
     ${Array(6).fill('<div class="article-card"><div class="article-thumb"><div class="skeleton" style="width:100%;height:100%;position:absolute;inset:0;"></div></div><div class="article-body"><div class="skeleton" style="height:18px;margin-bottom:8px;"></div><div class="skeleton" style="height:18px;width:80%;margin-bottom:16px;"></div><div class="skeleton" style="height:12px;width:60%;"></div></div></div>').join('')}
   </div>
 
@@ -701,7 +679,6 @@
 
 </main>
 
-<!-- ── Footer ──────────────────────────────────────────── -->
 <footer>
   <div class="footer-inner">
     <div class="footer-logo">ಟೆಕ್ ವಾರ್ತೆ</div>
@@ -716,25 +693,20 @@
 </footer>
 
 <script>
-  // ── Config ────────────────────────────────────────────
-  // Replace with your actual Supabase URL and anon key
   const SUPABASE_URL = 'https://bnwdxuzvpgzkdqswrrgc.supabase.co'
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJud2R4dXp2cGd6a2Rxc3dycmdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNjQxMzQsImV4cCI6MjA4Nzc0MDEzNH0.IRVjVeNLW6FY2QNK-8LGUBtum-1MsUjhSCQNUVUr_nk'
 
   const { createClient } = supabase
   const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-  // ── State ─────────────────────────────────────────────
   let currentCategory = 'all'
   let currentPage = 0
   const PAGE_SIZE = 9
 
-  // ── Date ─────────────────────────────────────────────
   const now = new Date()
   document.getElementById('headerDate').textContent =
     now.toLocaleDateString('kn-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' })
 
-  // ── Time ago ─────────────────────────────────────────
   function timeAgo(dateStr) {
     const diff = (Date.now() - new Date(dateStr)) / 1000
     if (diff < 3600) return `${Math.floor(diff/60)} ನಿಮಿಷ ಹಿಂದೆ`
@@ -742,33 +714,30 @@
     return `${Math.floor(diff/86400)} ದಿನ ಹಿಂದೆ`
   }
 
-  // ── Category color ────────────────────────────────────
   function catColor(article) {
     return article.categories?.color || '#FF5733'
   }
 
-  // ── Thumbnail ─────────────────────────────────────────
-  const EMOJIS = ['💻', '📱', '🤖', '🚀', '🔒', '🎮', '⚡', '🌐']
-  function thumbHtml(url, size = 'full') {
-    const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)]
-    if (url) {
-      return size === 'full'
-        ? `<img src="${url}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'article-thumb-placeholder\\'>${emoji}</div>'">`
-        : `<img src="${url}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;">`
-    }
-    return `<div class="${size === 'full' ? 'article-thumb-placeholder' : 'side-thumb-placeholder'}">${emoji}</div>`
+  function aiImageUrl(titleEn) {
+    const t = (titleEn || 'technology innovation digital future circuit').substring(0, 80)
+    const prompt = encodeURIComponent(t + ', professional technology news photo, photorealistic, sharp focus, 4k')
+    const seed = t.split('').reduce((a, c, i) => (a + c.charCodeAt(0) * (i + 1)) % 999983, 7)
+    return `https://image.pollinations.ai/prompt/${prompt}?width=1200&height=630&nologo=true&model=flux&seed=${seed}`
+  }
+  function thumbHtml(url, size = 'full', titleEn = '') {
+    const src = url || aiImageUrl(titleEn)
+    const fallback = aiImageUrl((titleEn || 'tech') + ' technology digital')
+    const style = size === 'full' ? '' : ' style="width:100%;height:100%;object-fit:cover;"'
+    return `<img src="${src}" alt="" loading="lazy"${style} onerror="if(this.src!=='${fallback}')this.src='${fallback}'">`
   }
 
-  // ── Render Hero ───────────────────────────────────────
   function renderHero(articles) {
     if (!articles.length) return
-
     const hero = articles[0]
     const heroSection = document.getElementById('heroSection')
-
     const heroCard = `
       <div class="hero-card" onclick="window.open('${hero.source_url}','_blank')">
-        ${thumbHtml(hero.thumbnail_url, 'full')}
+        ${thumbHtml(hero.thumbnail_url, 'full', hero.title_en)}
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <div class="hero-badge">⭐ ಮುಖ್ಯ ಸುದ್ದಿ</div>
@@ -780,26 +749,23 @@
           </div>
         </div>
       </div>`
-
     const sideCards = articles.slice(1, 3).map(a => `
       <div class="side-card" onclick="window.open('${a.source_url}','_blank')">
-        <div class="side-thumb">${thumbHtml(a.thumbnail_url, 'side')}</div>
+        <div class="side-thumb">${thumbHtml(a.thumbnail_url, 'side', a.title_en)}</div>
         <div class="side-body">
           <div class="side-title">${a.title_kn}</div>
           <div class="side-meta">${a.source_name} · ${timeAgo(a.published_at)}</div>
         </div>
       </div>`).join('')
-
     heroSection.innerHTML = heroCard + `<div class="side-stack">${sideCards}</div>`
   }
 
-  // ── Render Article Card ───────────────────────────────
   function renderCard(a) {
     const color = catColor(a)
     return `
       <div class="article-card" onclick="window.open('${a.source_url}','_blank')">
         <div class="article-thumb">
-          ${thumbHtml(a.thumbnail_url, 'full')}
+          ${thumbHtml(a.thumbnail_url, 'full', a.title_en)}
           ${a.categories ? `<div class="cat-tag" style="background:${color}">${a.categories.name_kn}</div>` : ''}
         </div>
         <div class="article-body">
@@ -819,7 +785,6 @@
       </div>`
   }
 
-  // ── Fetch Articles ────────────────────────────────────
   async function fetchArticles(page = 0, categorySlug = 'all') {
     let query = db
       .from('articles')
@@ -827,22 +792,17 @@
       .eq('is_published', true)
       .order('published_at', { ascending: false })
       .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
-
     if (categorySlug !== 'all') {
-      // Join via category slug
       const { data: cats } = await db.from('categories').select('id').eq('slug', categorySlug).single()
       if (cats) query = query.eq('category_id', cats.id)
     }
-
     const { data, error } = await query
     if (error) { console.error(error); return [] }
     return data || []
   }
 
-  // ── Load Initial ──────────────────────────────────────
   async function loadInitial() {
     const articles = await fetchArticles(0, currentCategory)
-
     if (!articles.length) {
       document.getElementById('heroSection').innerHTML = `
         <div style="grid-column:1/-1;padding:60px;text-align:center;color:var(--muted);">
@@ -852,37 +812,24 @@
       document.getElementById('articlesGrid').innerHTML = ''
       return
     }
-
-    // Hero = first 3
     renderHero(articles)
-
-    // Grid = rest
     const gridArticles = articles.slice(3)
     const grid = document.getElementById('articlesGrid')
     grid.innerHTML = gridArticles.map(renderCard).join('')
-
-    // Ticker
     const ticker = document.getElementById('tickerContent')
     ticker.innerHTML = articles.map(a => `<span class="ticker-item">• ${a.title_kn}</span>`).join('')
-
-    // Count
     document.getElementById('articleCount').textContent = `${articles.length}+ ಸುದ್ದಿಗಳು`
-
-    // Load more button
     if (articles.length >= PAGE_SIZE) {
       document.getElementById('loadMoreWrap').style.display = 'block'
     }
-
     currentPage = 0
   }
 
-  // ── Load More ─────────────────────────────────────────
   async function loadMore() {
     currentPage++
     const btn = document.querySelector('.load-more-btn')
     btn.textContent = 'ಲೋಡ್ ಆಗುತ್ತಿದೆ...'
     btn.disabled = true
-
     const articles = await fetchArticles(currentPage, currentCategory)
     const grid = document.getElementById('articlesGrid')
     articles.forEach(a => {
@@ -890,31 +837,23 @@
       el.innerHTML = renderCard(a)
       grid.appendChild(el.firstElementChild)
     })
-
     btn.textContent = 'ಇನ್ನಷ್ಟು ಸುದ್ದಿಗಳು ನೋಡಿ →'
     btn.disabled = false
-
     if (articles.length < PAGE_SIZE) {
       document.getElementById('loadMoreWrap').style.display = 'none'
     }
   }
 
-  // ── Filter by Category ────────────────────────────────
   function filterByCategory(slug, btn) {
     currentCategory = slug
     currentPage = 0
-
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'))
     btn.classList.add('active')
-
-    // Reset grid with skeleton
     document.getElementById('articlesGrid').innerHTML =
       Array(6).fill(`<div class="article-card"><div class="article-thumb skeleton" style="aspect-ratio:16/9"></div><div class="article-body"><div class="skeleton" style="height:16px;margin-bottom:8px;"></div><div class="skeleton" style="height:16px;width:70%"></div></div></div>`).join('')
-
     loadInitial()
   }
 
-  // ── Init ──────────────────────────────────────────────
   loadInitial()
 </script>
 
