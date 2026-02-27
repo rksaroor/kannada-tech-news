@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Kannada Tech News Bot
-Scrapes trending tech news → Translates to Kannada → Posts to Supabase
+Scrapes trending tech news -> Translates to Kannada -> Posts to Supabase
 Run via GitHub Actions 5x daily
 """
 
@@ -13,26 +13,27 @@ import hashlib
 import logging
 import feedparser
 import requests
+import urllib.parse
 from datetime import datetime, timezone
 from anthropic import Anthropic
 from supabase import create_client, Client
 
-# ─── Logging ────────────────────────────────────────────────────────────────
+# --- Logging ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s"
 )
 log = logging.getLogger(__name__)
 
-# ─── Config ─────────────────────────────────────────────────────────────────
+# --- Config ---
 SUPABASE_URL = os.environ["SUPABASE_URL"]
 SUPABASE_SERVICE_KEY = os.environ["SUPABASE_SERVICE_KEY"]
 ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
 
-# How many articles to post per run (5 posts/day, bot runs once → 5 articles)
+# How many articles to post per run (5 posts/day, bot runs once -> 5 articles)
 ARTICLES_PER_RUN = 5
 
-# RSS Feeds — mix of reliable tech sources
+# RSS Feeds - mix of reliable tech sources
 RSS_FEEDS = [
     {"url": "https://techcrunch.com/feed/",            "name": "TechCrunch"},
     {"url": "https://feeds.wired.com/wired/index",     "name": "Wired"},
@@ -41,7 +42,7 @@ RSS_FEEDS = [
     {"url": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml", "name": "NYT Tech"},
 ]
 
-# Category keyword mapping (English keywords → category slug)
+# Category keyword mapping (English keywords -> category slug)
 CATEGORY_KEYWORDS = {
     "artificial-intelligence": ["ai", "artificial intelligence", "machine learning", "gpt", "llm", "chatgpt", "gemini", "claude", "openai", "deepmind", "neural"],
     "smartphones":             ["iphone", "android", "smartphone", "samsung", "pixel", "oneplus", "mobile phone"],
@@ -53,12 +54,12 @@ CATEGORY_KEYWORDS = {
     "social-media":            ["twitter", "x.com", "meta", "instagram", "tiktok", "youtube", "facebook", "linkedin"],
 }
 
-# ─── Clients ────────────────────────────────────────────────────────────────
+# --- Clients ---
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 anthropic = Anthropic(api_key=ANTHROPIC_API_KEY)
 
 
-# ─── Helpers ────────────────────────────────────────────────────────────────
+# --- Helpers ---
 
 def make_slug(text: str, url: str) -> str:
     """Create a URL-safe slug from title + url hash to ensure uniqueness."""
@@ -99,7 +100,32 @@ def get_category_id(slug: str) -> str | None:
     return result.data[0]["id"] if result.data else None
 
 
-# ─── Fetching ────────────────────────────────────────────────────────────────
+def generate_ai_image_url(title_en: str, category_slug: str = None) -> str:
+    """
+    Generate a Pollinations.ai image URL based on the article title.
+    Free API - no key required. Seed derived from title for consistency.
+    """
+    cat_visuals = {
+        "artificial-intelligence": "glowing neural network AI robot futuristic blue",
+        "smartphones":             "modern sleek smartphone high-tech device close-up",
+        "startups":                "tech startup office innovation whiteboard pitch",
+        "cybersecurity":           "cybersecurity digital shield lock network protection",
+        "space-tech":              "rocket launch satellite cosmos outer space NASA",
+        "gaming":                  "video game controller esports neon lights arena",
+        "electric-vehicles":       "electric vehicle charging futuristic clean energy road",
+        "social-media":            "social media network icons smartphone connection",
+    }
+    visual_hint = cat_visuals.get(category_slug, "technology innovation digital future circuit") if category_slug else "technology innovation digital future circuit"
+    prompt = f"{title_en[:80]}, {visual_hint}, professional technology news photo, photorealistic, sharp focus, 4k"
+    seed = int(hashlib.md5(title_en.encode()).hexdigest()[:8], 16) % 999983
+    encoded = urllib.parse.quote(prompt)
+    return (
+        f"https://image.pollinations.ai/prompt/{encoded}"
+        f"?width=1200&height=630&nologo=true&model=flux&seed={seed}"
+    )
+
+
+# --- Fetching ---
 
 def fetch_articles_from_feeds() -> list[dict]:
     """Pull articles from all RSS feeds, newest first."""
@@ -141,7 +167,7 @@ def fetch_articles_from_feeds() -> list[dict]:
     return unique
 
 
-# ─── Translation ─────────────────────────────────────────────────────────────
+# --- Translation ---
 
 def translate_article(title_en: str, summary_en: str) -> dict:
     """
@@ -184,7 +210,7 @@ Summary: {summary_en}"""
     return json.loads(json_match.group())
 
 
-# ─── Main Pipeline ───────────────────────────────────────────────────────────
+# --- Main Pipeline ---
 
 def run():
     log.info("=" * 50)
@@ -222,6 +248,11 @@ def run():
             # Build slug
             slug = make_slug(article["title_en"], url)
 
+            # Use RSS thumbnail if provided; otherwise generate a free AI image
+            thumbnail_url = article.get("thumbnail_url") or generate_ai_image_url(
+                article["title_en"], cat_slug
+            )
+
             # Insert into Supabase
             supabase.table("articles").insert({
                 "title_kn": translated["title_kn"],
@@ -230,7 +261,7 @@ def run():
                 "summary_en": article["summary_en"],
                 "source_url": url,
                 "source_name": article["source_name"],
-                "thumbnail_url": article.get("thumbnail_url"),
+                "thumbnail_url": thumbnail_url,
                 "category_id": cat_id,
                 "slug": slug,
                 "meta_description": translated.get("meta_description", ""),
@@ -240,13 +271,13 @@ def run():
 
             log_scrape(url, "success")
             posted += 1
-            log.info(f"✅ Posted: {translated['title_kn'][:50]}")
+            log.info(f"Posted: {translated['title_kn'][:50]}")
 
         except Exception as e:
-            log.error(f"❌ Failed for {url}: {e}")
+            log.error(f"Failed for {url}: {e}")
             log_scrape(url, "failed", str(e))
 
-    log.info(f"\nDone. Posted {posted}/{len(to_process)} articles.")
+    log.info(f"Done. Posted {posted}/{len(to_process)} articles.")
 
 
 if __name__ == "__main__":
