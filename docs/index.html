@@ -83,7 +83,7 @@
       border-radius: 8px;
       display: grid;
       place-items: center;
-      font-family: var(--font-display);
+      font-family: var(--font-display;
       font-weight: 800;
       font-size: 18px;
       color: white;
@@ -658,8 +658,7 @@
 <nav class="cat-nav">
   <div class="cat-nav-inner">
     <button class="cat-btn active" data-slug="all" onclick="filterByCategory('all', this)">ಎಲ್ಲಾ</button>
-    <button class="cat-btn" data-slug="artificial-intelligence" onclick="filterByCategory('artificial-intelligence', this)">ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ</button>
-    <button class="cat-btn" data-slug="smartphones" onclick="filterByCategory('smartphones', this)">ಸ್ಮಾರ್ಟ್‌ಫೋನ್</button>
+    <button class="cat-btn" data-slug="artificial-intelligence" onclick="filterByCategory('artificial-intelligence', this)">ಕೃ,�8,�H8,�8,�x,��,�x,��,��,��,�8,�x,�8,�؝]ۏ���]ۈ�\��H��]X���]K\�Y�H��X\�ۙ\Ȉۘ�X��H��[\ByCategory('smartphones', this)">ಸ್ಮಾರ್ಟ್‌ಫೋನ್</button>
     <button class="cat-btn" data-slug="startups" onclick="filterByCategory('startups', this)">ಸ್ಟಾರ್ಟಪ್</button>
     <button class="cat-btn" data-slug="cybersecurity" onclick="filterByCategory('cybersecurity', this)">ಸೈಬರ್ ಭದ್ರತೆ</button>
     <button class="cat-btn" data-slug="space-tech" onclick="filterByCategory('space-tech', this)">ಬಾಹ್ಯಾಕಾಶ</button>
@@ -709,7 +708,7 @@
     <div class="footer-links">
       <a href="/">ಮುಖಪುಟ</a>
       <a href="/about">ನಮ್ಮ ಬಗ್ಗೆ</a>
-      <a href="/privacy">ಗೌಪಯತೆ ನೀತಿ</a>
+      <a href="/privacy">ಗೌಪ್ಯತೆ ನೀತಿ</a>
     </div>
     <div class="footer-copy">© 2025 ಟೆಕ್ ವಾರ್ತೆ · Built with ♥ for Karnataka</div>
   </div>
@@ -747,17 +746,13 @@
     return article.categories?.color || '#FF5733'
   }
 
-  // ── Thumbnail (picsum.photos — free, deterministic, always available) ────
-  function picsumUrl(seed) {
-    // Derive a clean seed string from the article title/slug
-    const s = (seed || 'tech-news').toLowerCase().replace(/[^a-z0-9]+/g, '-').substring(0, 40)
-    return `https://picsum.photos/seed/${s}/1200/630`
-  }
+  // ── Thumbnail ─────────────────────────────────────────
   function thumbHtml(url, size = 'full', titleEn = '') {
     const isLegacy = url && url.includes('pollinations.ai')
-    const src = (!url || isLegacy) ? picsumUrl(titleEn) : url
+    const realUrl = (!url || isLegacy) ? null : url
+    if (!realUrl) return ''
     const style = size === 'full' ? '' : ' style="width:100%;height:100%;object-fit:cover;"'
-    return `<img src="${src}" alt="" loading="lazy"${style} onerror="this.style.background='#1e293b'">`
+    return `<img src="${realUrl}" alt="" loading="lazy"${style} onerror="this.remove()">`
   }
 
   // ── Render Hero ───────────────────────────────────────
