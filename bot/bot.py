@@ -99,13 +99,35 @@ def get_category_id(slug: str) -> str | None:
     return result.data[0]["id"] if result.data else None
 
 
-def generate_image_url(slug: str) -> str:
+def fetch_og_image(url: str) -> str | None:
     """
-    Generate a deterministic placeholder image URL using picsum.photos.
-    The slug ensures the same article always gets the same image.
-    Free, no API key required, always available.
+    Try to extract the og:image from an article page.
+    Returns the image URL or None if not found / request fails.
     """
-    return f"https://picsum.photos/seed/{slug}/1200/630"
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; KannadaTechBot/1.0; +https://rksaroor.github.io/kannada-tech-news/)"
+        }
+        resp = requests.get(url, headers=headers, timeout=6, allow_redirects=True)
+        resp.raise_for_status()
+        # Look for og:image or twitter:image meta tag
+        og = re.search(
+            r'<meta[^>]+(?:property=["\']og:image["\']|name=["\']twitter:image["\'])[^>]+content=["\'](https?://[^"\'>\s]+)',
+            resp.text, re.IGNORECASE
+        )
+        if not og:
+            og = re.search(
+                r'<meta[^>]+content=["\'](https?://[^"\'>\s]+)["\'][^>]+(?:property=["\']og:image["\']|name=["\']twitter:image["\'])',
+                resp.text, re.IGNORECASE
+            )
+        if og:
+            img_url = og.group(1)
+            # Reject tiny/tracking images (< 100 chars or obvious trackers)
+            if len(img_url) > 15 and "pixel" not in img_url and "tracker" not in img_url:
+                return img_url
+    except Exception as e:
+        log.debug(f"og:image fetch failed for {url}: {e}")
+    return None
 
 
 # ─── Fetching ────────────────────────────────────────────────────────────────
@@ -157,19 +179,20 @@ def translate_article(title_en: str, summary_en: str) -> dict:
     Translate title and summary to authentic Kannada using Claude.
     Returns dict with title_kn, summary_kn, meta_description.
     """
-    prompt = f"""You are a professional Kannada journalist. Translate the following tech news article title and summary into natural, readable Kannada that a general Kannada-speaking audience would enjoy reading.
+    prompt = f"""You are a professional Kannada journalist writing for a Kannada tech news portal. Your task is to translate the article title and write a comprehensive Kannada summary that is informative and engaging for a Kannada-speaking audience.
 
 Guidelines:
 - Write in clear, journalistic Kannada (not overly literary or academic)
-- Keep proper nouns, brand names, and tech terms in English or transliterate them naturally (e.g., AI, iPhone, ChatGPT, Samsung)
+- Keep proper nouns, brand names, and tech terms in English os transliterate them naturally (e.g., AI, iPhone, ChatGPT, Samsung)
 - Numbers stay as digits
 - The tone should be informative and engaging
-- Do NOT add your own opinions or extra information
+- For summary_kn: Write AT LEAST 2 full paragraphs (minimum 150 words total). The first paragraph should introduce the main topic and key facts. The second paragraph should provide context, implications, or additional details about the story. Expand thoughtfully on the content provided — do not merely translate word-for-word if the source is short.
+- Do NOT add false information; only expand on what can reasonably be inferred from the title and summary provided
 
 Return ONLY a JSON object with these exact keys:
 {{
   "title_kn": "Kannada translation of the title",
-  "summary_kn": "Kannada translation of the summary",
+  "summary_kn": "A comprehensive Kannada summary of at least 2 paragraphs separated by a blank line (\\n\\n). Minimum 150 words.",
   "meta_description": "A short 1-sentence Kannada SEO description (max 120 chars)"
 }}
 
@@ -179,7 +202,7 @@ Summary: {summary_en}"""
 
     response = anthropic.messages.create(
         model="claude-sonnet-4-6",
-        max_tokens=1024,
+        max_tokens=2000,
         messages=[{"role": "user", "content": prompt}]
     )
 
@@ -231,8 +254,15 @@ def run():
             # Build slug
             slug = make_slug(article["title_en"], url)
 
-            # Use RSS thumbnail if provided; otherwise use a picsum placeholder
-            thumbnail_url = article.get("thumbnail_url") or generate_image_url(slug)
+            # Use RSS thumbnail if provided; otherwise try og:image from page; else null
+            thumbnail_url = article.get("thumbnail_url")
+            if not thumbnail_url:
+                log.info(f"  Fetching og:image for: {url[:60]}")
+                thumbnail_url = fetch_og_image(url)
+                if thumbnail_url:
+                    log.info(f"  Found og:image: {thumbnail_url[:60]}")
+                else:
+                    log.info("  No image found, storing null")
 
             # Insert into Supabase
             supabase.table("articles").insert({
