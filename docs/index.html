@@ -470,7 +470,7 @@
       text-align: center;
       padding: 80px 20px;
       color: var(--text3);
-      }
+    }
     .empty-icon { font-size: 48px; margin-bottom: 16px; }
     .empty-msg { font-family: var(--font-kn); font-size: 16px; margin-bottom: 6px; }
 
@@ -511,6 +511,179 @@
       from { opacity: 0; transform: translateY(8px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+
+    /* ── Article Modal ────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+      transform: translateY(24px) scale(0.98);
+      transition: transform 0.25s;
+    }
+    .modal-overlay.open .modal-card {
+      transform: translateY(0) scale(1);
+    }
+    .modal-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 2;
+    }
+    .modal-topbar-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .modal-close-x {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+      line-height: 1;
+    }
+    .modal-close-x:hover { background: var(--border2); color: var(--text); }
+    .modal-hero {
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1c1c1c 0%, #111 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+    }
+    .modal-hero img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    .modal-body {
+      padding: 24px 24px 28px;
+    }
+    .modal-cat-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .modal-cat-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid currentColor;
+    }
+    .modal-title {
+      font-family: var(--font-kn);
+      font-size: 21px;
+      font-weight: 800;
+      line-height: 1.45;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+    .modal-divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 18px;
+    }
+    .modal-summary {
+      font-family: var(--font-kn);
+      font-size: 15px;
+      color: var(--text2);
+      line-height: 1.85;
+      margin-bottom: 24px;
+    }
+    .modal-summary p { margin-bottom: 14px; }
+    .modal-summary p:last-child { margin-bottom: 0; }
+    .modal-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text3);
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .modal-source-link {
+      flex: 1;
+      padding: 11px 16px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-kn);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+    .modal-source-link:hover { background: #e6402a; }
+    .modal-close-btn {
+      padding: 11px 20px;
+      background: transparent;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--text2);
+      font-family: var(--font-kn);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .modal-close-btn:hover { border-color: var(--text2); color: var(--text); }
+    @media (max-width: 600px) {
+      .modal-card { border-radius: 16px; }
+      .modal-title { font-size: 18px; }
+      .modal-summary { font-size: 14px; }
+    }
   </style>
 </head>
 <body>
@@ -525,7 +698,7 @@
   </div>
 </div>
 
-<!-- ── Header ────────────────────────�────────────────────────────────── -->
+<!-- ── Header ────────────────────────────────────────────────────────── -->
 <header>
   <div class="header-inner">
     <a class="logo" href="/">
@@ -590,6 +763,32 @@
 
 </main>
 
+<!-- ── Article Modal ──────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="articleModal">
+  <div class="modal-card" id="modalCard">
+    <div class="modal-topbar">
+      <span class="modal-topbar-label">&#3349;&#3344;&#3381;&#3344;&#3337; &#3256;&#3390;&#3352;&#3390;&#3330;&#3358;</span>
+      <button class="modal-close-x" onclick="closeModal()" aria-label="close">&#10005;</button>
+    </div>
+    <div class="modal-hero" id="modalHero"></div>
+    <div class="modal-body">
+      <div class="modal-cat-row">
+        <span class="modal-cat-badge" id="modalCatBadge"></span>
+      </div>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-divider"></div>
+      <div class="modal-summary" id="modalSummary"></div>
+      <div class="modal-meta-row" id="modalMeta"></div>
+      <div class="modal-actions">
+        <a class="modal-source-link" id="modalSourceLink" href="#" target="_blank" rel="noopener">
+          &#3350;&#3370;&#3354; &#3354;&#3375;&#3326;&#3344; &#8599;
+        </a>
+        <button class="modal-close-btn" onclick="closeModal()">&#3350;&#3369;&#3330;&#3381;&#3330;&#3369; &#10005;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── Footer ────────────────────────────────────────────────────────── -->
 <footer>
   <div class="footer-inner">
@@ -610,6 +809,7 @@
   let currentCategory = 'all'
   let currentPage     = 0
   const PAGE_SIZE     = 9
+  window.__arts       = {}   // article store keyed by id
 
   // ── Date ─────────────────────────────────────────────────────────────────
   document.getElementById('headerDate').textContent =
@@ -620,12 +820,12 @@
     if (!dateStr) return ''
     const diff = (Date.now() - new Date(dateStr)) / 1000
     if (diff < 60)    return '\u0c87\u0ca6\u0cc0\u0c97'
-    if (diff < 3600)  return Math.floor(diff/60)    + ' \u0ca8\u0cbf\u0cae\u0cbf\u0cb7 \u0cb9\u0cbf\u0c82\u0ca6\u0cc6'
+    if (diff < 3600)  return Math.floor(diff/60)   + ' \u0ca8\u0cbf\u0cae\u0cbf\u0cb7 \u0cb9\u0cbf\u0c82\u0ca6\u0cc6'
     if (diff < 86400) return Math.floor(diff/3600)  + ' \u0c97\u0c82\u0c9f\u0cc6 \u0cb9\u0cbf\u0c82\u0ca6\u0cc6'
     return Math.floor(diff/86400) + ' \u0ca6\u0cbf\u0ca8 \u0cb9\u0cbf\u0c82\u0ca6\u0cc6'
   }
 
-  function catColor(a) { return a.categories?.color || '#FF4D2E'}
+  function catColor(a) { return a.categories?.color || '#FF4D2E' }
 
   function catEmoji(slug) {
     const m = {
@@ -660,7 +860,7 @@
       ? `<div class="featured-img-side"><img class="featured-img" src="${img}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'featured-no-img\\'>${emoji}</div>'"></div>`
       : `<div class="featured-img-side"><div class="featured-no-img">${emoji}</div></div>`
 
-    return `<div class="featured-card" onclick="window.open('${a.source_url}','_blank')">
+    return `<div class="featured-card" onclick="openArticle('${a.id}')">
       ${imgSide}
       <div class="featured-body">
         <div>
@@ -678,9 +878,9 @@
             <span>\u00b7</span>
             <span>${timeAgo(a.published_at)}</span>
           </div>
-          <a class="read-btn" href="${a.source_url}" target="_blank" onclick="event.stopPropagation()">
-            \u0cae\u0cc1\u0c82\u0ca6\u0cc6 \u0c93\u0ca6\u0cbf \u2192
-          </a>
+          <button class="read-btn" onclick="event.stopPropagation(); openArticle('${a.id}')">
+            \u0cb8\u0abe\u0cb0\u0abe\u0c82\u0cb6 \u0ca8\u0ccb\u0ca1\u0cbf \u2192
+          </button>
         </div>
       </div>
     </div>`
@@ -697,7 +897,7 @@
       ? `<div class="card-img-wrap"><img class="card-img" src="${img}" alt="" loading="lazy" onerror="this.parentElement.outerHTML='<div class=\\'card-img-wrap\\'><div class=\\'card-no-img\\' style=\\"--cat-color:${color}\\">${emoji}</div></div>'"></div>`
       : `<div class="card-img-wrap"><div class="card-no-img" style="--cat-color:${color}">${emoji}</div></div>`
 
-    return `<div class="article-card" style="--cat-color:${color}" onclick="window.open('${a.source_url}','_blank')">
+    return `<div class="article-card" style="--cat-color:${color}" onclick="openArticle('${a.id}')">
       ${imgHtml}
       <div class="card-body">
         ${catKn ? `<div class="card-cat-tag">${catKn}</div>` : ''}
@@ -736,6 +936,7 @@
   // ── Load Initial ──────────────────────────────────────────────────────────
   async function loadInitial() {
     const articles = await fetchArticles(0, currentCategory)
+    articles.forEach(a => { window.__arts[a.id] = a })
 
     if (!articles.length) {
       document.getElementById('featuredSection').innerHTML = ''
@@ -777,6 +978,7 @@
     btn.disabled = true
 
     const articles = await fetchArticles(currentPage, currentCategory)
+    articles.forEach(a => { window.__arts[a.id] = a })
     const grid = document.getElementById('articlesGrid')
     articles.forEach(a => {
       const el = document.createElement('div')
@@ -806,6 +1008,91 @@
     ).join('')
     loadInitial()
   }
+
+  // ── Modal ─────────────────────────────────────────────────────────────────
+  function openArticle(id) {
+    const a = window.__arts[id]
+    if (!a) return
+
+    const img   = realImg(a.thumbnail_url)
+    const emoji = catEmoji(a.categories?.slug || '')
+    const color = catColor(a)
+    const catKn = a.categories?.name_kn || ''
+
+    // Hero image or emoji
+    const hero = document.getElementById('modalHero')
+    if (img) {
+      hero.innerHTML = `<img src="${img}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='${emoji}'">`
+    } else {
+      hero.textContent = emoji
+    }
+
+    // Category badge
+    const badge = document.getElementById('modalCatBadge')
+    if (catKn) {
+      badge.textContent = catKn
+      badge.style.color = color
+      badge.style.borderColor = color
+      badge.style.display = 'inline'
+    } else {
+      badge.style.display = 'none'
+    }
+
+    // Title (Kannada only)
+    document.getElementById('modalTitle').textContent = a.title_kn || ''
+
+    // Summary — split into paragraphs for readability
+    const summaryEl = document.getElementById('modalSummary')
+    const raw = (a.summary_kn || '').trim()
+    const paras = raw.split(/\n\n+/).filter(Boolean)
+    if (paras.length > 1) {
+      summaryEl.innerHTML = paras.map(p => `<p>${p}</p>`).join('')
+    } else if (raw) {
+      // Try splitting on ". " boundaries to break into 2 natural paragraphs
+      const sentences = raw.match(/[^.!?]+[.!?]+/g) || [raw]
+      if (sentences.length > 3) {
+        const half = Math.ceil(sentences.length / 2)
+        summaryEl.innerHTML =
+          `<p>${sentences.slice(0, half).join(' ')}</p>` +
+          `<p>${sentences.slice(half).join(' ')}</p>`
+      } else {
+        summaryEl.innerHTML = `<p>${raw}</p>`
+      }
+    } else {
+      summaryEl.innerHTML = ''
+    }
+
+    // Meta row
+    document.getElementById('modalMeta').innerHTML = `
+      <div class="source-dot" style="background:${color}"></div>
+      <span style="color:var(--text2);font-weight:600">${a.source_name || ''}</span>
+      <span>\u00b7</span>
+      <span>${timeAgo(a.published_at)}</span>
+    `
+
+    // Source link (for those who want to read more)
+    document.getElementById('modalSourceLink').href = a.source_url || '#'
+
+    // Open overlay
+    document.getElementById('articleModal').classList.add('open')
+    document.body.style.overflow = 'hidden'
+    document.getElementById('modalCard').scrollTop = 0
+  }
+
+  function closeModal() {
+    document.getElementById('articleModal').classList.remove('open')
+    document.body.style.overflow = ''
+  }
+
+  // Close on backdrop click (outside the card)
+  document.getElementById('articleModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal()
+  })
+
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal()
+  })
 
   // ── Init ──────────────────────────────────────────────────────────────────
   loadInitial()
